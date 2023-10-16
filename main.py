@@ -1,5 +1,10 @@
 import math
+
+from Methods.BackwardEulerMethod import BackwardEulerMethod
+from Methods.CrankNicolsonMethod import CrankNicolsonMethod
+from Methods.EulerMethod import EulerMethod
 from Rules.MidPointRule import MidPointRule
+from Rules.NewtonSolver import NewtonSolver
 from Rules.TrapezoidalRule import TrapezoidalRule
 from Rules.SimpsonRule import SimpsonsRule
 from Rules.ConvergenceAnalysis import ConvergenceAnalysis
@@ -51,16 +56,16 @@ print(f'Estimated Convergence Rate (Trapezoidal Rule): {trapezoidal_rates[:max_d
 print(f'Estimated Convergence Rate (Simpson\'s Rule): {simpsons_rates[:max_displayed_rates]}')
 
 # Plot the log-log graph
-plt.figure(figsize=(10, 6))
-plt.loglog(midpoint_analysis.hs, midpoint_analysis.errors, 'o-', label='Midpoint Rule', markersize=8)
-plt.loglog(trapezoidal_analysis.hs, trapezoidal_analysis.errors, 's-', label='Trapezoidal Rule', markersize=8)
-plt.loglog(simpsons_analysis.hs, simpsons_analysis.errors, '^-', label="Simpson's Rule", markersize=8)
-plt.xlabel('h', fontsize=14)
-plt.ylabel('Error', fontsize=14)
-plt.title('Convergence Rates of Quadrature Methods', fontsize=16)
-plt.legend()
-plt.grid()
-plt.show()
+# plt.figure(figsize=(10, 6))
+# plt.loglog(midpoint_analysis.hs, midpoint_analysis.errors, 'o-', label='Midpoint Rule', markersize=8)
+# plt.loglog(trapezoidal_analysis.hs, trapezoidal_analysis.errors, 's-', label='Trapezoidal Rule', markersize=8)
+# plt.loglog(simpsons_analysis.hs, simpsons_analysis.errors, '^-', label="Simpson's Rule", markersize=8)
+# plt.xlabel('h', fontsize=14)
+# plt.ylabel('Error', fontsize=14)
+# plt.title('Convergence Rates of Quadrature Methods', fontsize=16)
+# plt.legend()
+# plt.grid()
+# plt.show()
 
 
 #####
@@ -78,3 +83,61 @@ plt.show()
 # rule that has unequal weights. This is because the original trapezoidal rule accounts
 # for the shape of the function by using the appropriate weights, whereas equal
 # weights do not capture the function's behavior as effectively.
+
+
+#Exercise 2
+#a
+def f(y):
+    return y - y**3
+
+
+y0 = 2.0
+T = 5.0
+N = 1000
+solver = NewtonSolver()  # Create a solver for nonlinear algebraic equations
+
+# Example usage for Euler method
+euler_solver = EulerMethod(y0, T, N)
+t_euler, y_euler = euler_solver.solve()
+
+# Example usage for Backward Euler method
+backward_euler_solver = BackwardEulerMethod(y0, T, N, solver)
+t_backward_euler, y_backward_euler = backward_euler_solver.solve()
+
+# Example usage for Crank-Nicolson method
+crank_nicolson_solver = CrankNicolsonMethod(y0, T, N, solver)
+t_crank_nicolson, y_crank_nicolson = crank_nicolson_solver.solve()
+
+
+# Solve using the Euler method
+t_euler, y_euler = euler_solver.solve()
+
+# Solve using the Backward Euler method
+t_backward_euler, y_backward_euler = backward_euler_solver.solve()
+
+# Solve using the Crank-Nicolson method
+t_crank_nicolson, y_crank_nicolson = crank_nicolson_solver.solve()
+
+def f(y):
+    return y - y**3
+
+
+y0 = 2.0
+T = 5.0
+N = 1000
+solver = NewtonSolver()  # Create a solver for nonlinear algebraic equations
+
+# Example usage for Euler method
+euler_solver = EulerMethod(y0, T, N)
+t_euler, y_euler = euler_solver.solve()
+print("t_euler:\t" ,t_euler, y_euler)
+
+# Example usage for Backward Euler method
+backward_euler_solver = BackwardEulerMethod(y0, T, N, solver)
+t_backward_euler, y_backward_euler = backward_euler_solver.solve()
+print("t_backward_euler:\t" ,t_backward_euler, y_backward_euler)
+
+# Example usage for Crank-Nicolson method
+crank_nicolson_solver = CrankNicolsonMethod(y0, T, N, solver)
+t_crank_nicolson, y_crank_nicolson = crank_nicolson_solver.solve()
+print("t_crank_niclson:\t" ,t_crank_nicolson, y_crank_nicolson)
