@@ -11,6 +11,7 @@ class DeExactResult:
     def calculate(self):
         y = np.zeros(self.N + 1)
         y[0] = self.y0
-        for n in range(self.N):
-            y[n + 1] = self.y0 / (np.sqrt(self.y0**2 - (self.y0**2 - 1) * math.e**(-2 * self.h * n)))
+        for n in range(1, self.N + 1):
+            y[n] = self.y0 / (np.sqrt(self.y0 ** 2 - (self.y0 ** 2 - 1) * math.e ** (-2 * self.h * n)))
         return y
+
