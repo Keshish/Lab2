@@ -1,14 +1,17 @@
-import math
-import numpy as np
-from Methods.BackwardEulerMethod import BackwardEulerMethod
+from Methods.BackwardEulerMethod import EulerBackwardMethod
 from Methods.CrankNicolsonMethod import CrankNicolsonMethod
 from Methods.EulerMethod import EulerMethod
 from Rules.MidPointRule import MidPointRule
-from Rules.NewtonSolver import NewtonSolver
 from Rules.TrapezoidalRule import TrapezoidalRule
 from Rules.SimpsonRule import SimpsonsRule
 from Rules.NumericalIntegrationAnalyzer import NumericalIntegrationAnalyzer
+from Methods.DeExactResult import DeExactResult
+import numpy as np
+import sympy as sym
+import math
+import pandas as pd
 import matplotlib.pyplot as plt
+
 
 exact_value = 1
 a = 0
@@ -55,56 +58,39 @@ analyzer.plot_convergence_rates()
 
 #Exercise 2
 #a
-def f(y):
-    return y - y**3
+def ex2():
+    x = sym.symbols('x')
+    y0 = 0.1
+    T = 1
+    N = 6
+    dy = x - x**3
+
+    de_exact = DeExactResult(y0, T, N)
+    y_exact = de_exact.calculate()
+
+    euler = EulerMethod(y0, T, N, dy)
+    y_euler = euler.calculate()
+
+    euler_back = EulerBackwardMethod(y0, T, N, dy)
+    y_euler_back = euler_back.calculate()
+
+    crank_nicolson = CrankNicolsonMethod(y0, T, N, dy)
+    y_crank_nicolson = crank_nicolson.calculate()
+
+    # Plots of the approximations and the exact solution
+    plt.figure()
+    x_lin = np.linspace(0, T, N + 1)
+    plt.plot(x_lin, y_exact)
+    plt.plot(x_lin, y_euler)
+    plt.plot(x_lin, y_euler_back)
+    plt.plot(x_lin, y_crank_nicolson)
+    plt.legend(['Exact solution', 'Euler Solution', 'Euler Backwards Solution', 'Crank Nicolson Solution'])
+    plt.show()
+
+    print("2)\n")
+    print(f'\t\tRate Euler\t{y_euler[-1]}')
+    print(f'\t\tRate Euler Backwards\t{y_euler_back[-1]}')
+    print(f'\t\tRate Crack Nicolson\t{y_crank_nicolson[-1]}')
 
 
-y0 = 2.0
-T = 5.0
-N = 1000
-solver = NewtonSolver()  # Create a solver for nonlinear algebraic equations
-
-euler_solver = EulerMethod(y0, T, N)
-t_euler, y_euler = euler_solver.solve()
-
-backward_euler_solver = BackwardEulerMethod(y0, T, N, solver)
-t_backward_euler, y_backward_euler = backward_euler_solver.solve()
-
-crank_nicolson_solver = CrankNicolsonMethod(y0, T, N, solver)
-t_crank_nicolson, y_crank_nicolson = crank_nicolson_solver.solve()
-
-
-# Solve using the Euler method
-t_euler, y_euler = euler_solver.solve()
-
-# Solve using the Backward Euler method
-t_backward_euler, y_backward_euler = backward_euler_solver.solve()
-
-# Solve using the Crank-Nicolson method
-t_crank_nicolson, y_crank_nicolson = crank_nicolson_solver.solve()
-
-def f(y):
-    return y - y**3
-
-
-y0 = 0.1
-T = 5.0
-N = 8
-print("Start")
-solver = NewtonSolver()  # Create a solver for nonlinear algebraic equations
-
-# Example usage for Euler method
-euler_solver = EulerMethod(y0, T, N)
-t_euler, y_euler = euler_solver.solve()
-print("t_euler:\t" ,t_euler, y_euler)
-
-
-# Example usage for Backward Euler method
-backward_euler_solver = BackwardEulerMethod(y0, T, N, solver)
-t_backward_euler, y_backward_euler = backward_euler_solver.solve()
-print("t_backward_euler:\t" ,t_backward_euler, y_backward_euler)
-
-# Example usage for Crank-Nicolson method
-crank_nicolson_solver = CrankNicolsonMethod(y0, T, N, solver)
-t_crank_nicolson, y_crank_nicolson = crank_nicolson_solver.solve()
-print("t_crank_niclson:\t" ,t_crank_nicolson, y_crank_nicolson)
+ex2()

@@ -1,20 +1,22 @@
-class BackwardEulerMethod:
-    def __init__(self, y0, T, N, solver):
+import numpy as np
+import sympy as sym
+from Rules.NewtonSolver import NewtonMethod
+
+class EulerBackwardMethod:
+    def __init__(self, y0, T, N, dy):
         self.y0 = y0
         self.T = T
         self.N = N
+        self.dy = dy
         self.h = T / N
-        self.solver = solver
 
-    def solve(self):
-        t_values = [i * self.h for i in range(self.N + 1)]
-        y_values = [self.y0]
-
-        for i in range(self.N):
-            t = t_values[i]
-            y_n = y_values[-1]
-            f_n = y_n - y_n**3  # Calculate the value of f at y_n
-            y_next = self.solver.solve(self.h, t, y_n, f_n)  # Pass both y_n and f_n to the solver
-            y_values.append(y_next)
-
-        return t_values, y_values
+    def calculate(self):
+        x = sym.symbols('x')
+        y = np.zeros(self.N + 1)
+        y[0] = self.y0
+        for n in range(self.N):
+            fN = x - y[n] - self.h * self.dy
+            newton = NewtonMethod(fN, sym.diff(fN, x), y[n], 10**(-4))
+            root, _ = newton.solve()  # Extract the root value and ignore the number of iterations
+            y[n + 1] = root  # Store the root value in the y array
+        return y
